@@ -1,0 +1,6 @@
+renamer:
+  source-directory: /Users/bzvir/Dropbox/rename
+  target-directory: /Users/bzvir/photo-exp
+  clean-target-directory: true
+  remove-processed: false
+  copy-others: true
