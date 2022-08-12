@@ -12,7 +12,7 @@ import java.time.temporal.TemporalAmount;
 import java.util.Date;
 import java.util.function.Predicate;
 
-import static hello.Changer.NEW_NAME_PATTERN;
+import static renamer.NewNameResolver.NEW_NAME_PATTERN;
 
 @Slf4j(topic = "global")
 public class Mp4Parser implements Parser {
@@ -23,20 +23,20 @@ public class Mp4Parser implements Parser {
 
     @Override
     public ItemDto constructItem(File file) {
-        IsoFile isoFile;
-        try {
-            isoFile = new IsoFile(file.getAbsolutePath());
+        try (IsoFile isoFile = new IsoFile(file.getAbsolutePath())) {
+            Date date = isoFile.getMovieBox()
+                               .getMovieHeaderBox()
+                               .getCreationTime();
+            return ItemDto.builder()
+                          .file(file)
+                          .name(file.getName())
+                          .newNameDate(date.toString())
+                          .build();
         } catch (IOException e) {
-            log.warn("can't read video file: "+ file);
+            log.warn("can't read video file: " + file);
             return null;
         }
 
-        Date date = isoFile.getMovieBox().getMovieHeaderBox().getCreationTime();
-        return ItemDto.builder()
-                .file(file)
-                .name(file.getName())
-                .newNameDate(date.toString())
-                .build();
     }
 
     public static void main(String[] args) throws IOException {
@@ -47,13 +47,16 @@ public class Mp4Parser implements Parser {
 
     public String shiftDate(String origin) {
         ZonedDateTime dt = ZonedDateTime.parse(origin, DATE_TIME_FORMATTER);
-        TemporalAmount amount = Period.ofYears(66).plusDays(1);
-                                                    //"EEE MMM d HH:mm:ss z yyyy";
-        return dt.plus(amount).format(DateTimeFormatter.ofPattern(OUTPUT_PATTERN));
+        TemporalAmount amount = Period.ofYears(66)
+                                      .plusDays(1);
+        //"EEE MMM d HH:mm:ss z yyyy";
+        return dt.plus(amount)
+                 .format(DateTimeFormatter.ofPattern(OUTPUT_PATTERN));
     }
 
     @Override
     public Predicate<? super File> getFilter() {
-        return pathname -> pathname.getName().endsWith(".mp4");
+        return pathname -> pathname.getName()
+                                   .endsWith(".mp4");
     }
 }

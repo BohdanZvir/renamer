@@ -1,6 +1,5 @@
 package renamer;
 
-import hello.MyLogger;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;

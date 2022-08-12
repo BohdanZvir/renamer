@@ -1,6 +1,5 @@
 package renamer;
 
-import hello.Changer;
 import hello.ItemDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,10 +10,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static hello.JpgPictureParser.*;
+import static hello.JpgPictureParser.NAMED_DATE_PATTERN;
+import static hello.JpgPictureParser.ORIGIN_DATE_PATTERN;
 
 public interface NewNameResolver {
+
     Logger log = LoggerFactory.getLogger("global");
+    String NEW_NAME_PATTERN = "yyyy-MM-dd HH.mm.ss";
 
     boolean canResolve(String filename);
 
@@ -50,7 +52,7 @@ public interface NewNameResolver {
             }
         }
 
-        DateFormat format = new SimpleDateFormat(Changer.NEW_NAME_PATTERN);
+        DateFormat format = new SimpleDateFormat(NEW_NAME_PATTERN);
         return format.format(origin) + Util.getExtension(name);
     }
 
