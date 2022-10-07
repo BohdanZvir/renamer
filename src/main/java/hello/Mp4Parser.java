@@ -10,7 +10,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAmount;
 import java.util.Date;
-import java.util.function.Predicate;
 
 import static renamer.NewNameResolver.NEW_NAME_PATTERN;
 
@@ -54,9 +53,4 @@ public class Mp4Parser implements Parser {
                  .format(DateTimeFormatter.ofPattern(OUTPUT_PATTERN));
     }
 
-    @Override
-    public Predicate<? super File> getFilter() {
-        return pathname -> pathname.getName()
-                                   .endsWith(".mp4");
-    }
 }

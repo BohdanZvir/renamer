@@ -29,21 +29,25 @@ public class RenamerApp {
 
         props = Util.readProps("application.yaml", Props.class, "/renamer");
         sourceDirectory = Util.toAbsolute(Path.of(props.getSourceDirectory()));
-        targetDirectory = Optional.ofNullable(props.getTargetDirectory()).map(Path::of).map(Util::toAbsolute).orElse(sourceDirectory);
+        targetDirectory = Optional.ofNullable(props.getTargetDirectory())
+                                  .map(Path::of)
+                                  .map(Util::toAbsolute)
+                                  .orElse(sourceDirectory);
         validateTarget(targetDirectory);
         log.info("Properties: {}", props);
 
-        resolverList = List.of(new JpgResolver(), new Mp4FileResolver(), new PrefixNameResolver(), new NewNameResolver() {
-            @Override
-            public boolean canResolve(String filename) {
-                return props.isCopyOthers();
-            }
+        resolverList = List.of(new JpgResolver(), new Mp4FileResolver(), new PrefixNameResolver(),
+                               new SpotifyFileResolver(), new NewNameResolver() {
+                    @Override
+                    public boolean canResolve(String filename) {
+                        return props.isCopyOthers();
+                    }
 
-            @Override
-            public String resolve(String filename) {
-                return filename;
-            }
-        });
+                    @Override
+                    public String resolve(String filename) {
+                        return filename;
+                    }
+                });
     }
 
     private void validateTarget(Path targetDirectory) {

@@ -9,9 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.function.Predicate;
-
-import static renamer.JpgResolver.*;
 
 @Slf4j(topic = "global")
 public class JpgPictureParser implements Parser {
@@ -52,11 +49,4 @@ public class JpgPictureParser implements Parser {
                 .build();
     }
 
-    @Override
-    public Predicate<? super File> getFilter() {
-        return path ->
-                (path.toString().toLowerCase().endsWith(JPG)
-                        || path.toString().toLowerCase().endsWith(JPEG)
-                        || path.toString().toLowerCase().endsWith(PNG));
-    }
 }
