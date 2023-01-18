@@ -122,8 +122,9 @@ public class RenamerApp {
         }
         Path targetPath = Path.of(targetDirectory.toString(), newName);
         if (Files.exists(targetPath)) {
-            log.warn("{} - already exists.", targetPath);
-            validateTargetFile(Util.aliasName(newName));
+           var targetPathNew = validateTargetFile(Util.aliasName(newName));
+            log.warn("{} - already exists. new {}", targetPath, targetPathNew);
+            return targetPathNew;
         }
         return targetPath;
     }

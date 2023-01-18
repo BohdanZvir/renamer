@@ -6,7 +6,7 @@
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
         # File appender
-        <File name="fout" fileName="Logging.txt"
+        <File name="fout" fileName="Logging1.txt"
               immediateFlush="false" append="false">
             # Pattern of log message for file appender
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %p %m%n"/>
