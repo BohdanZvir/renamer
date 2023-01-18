@@ -26,9 +26,7 @@ public interface NewNameResolver {
     }
 
     default String resolve(File file) {
-        String name = file.getName();
-        log.info("{} process {}", getClass().getSimpleName(), name);
-        return resolve(name);
+        return resolve(file.getName());
     }
 
     default String createItemNewName(ItemDto pic) {

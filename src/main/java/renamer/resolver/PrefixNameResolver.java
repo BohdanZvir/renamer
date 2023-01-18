@@ -30,7 +30,9 @@ public class PrefixNameResolver implements NewNameResolver {
         if (parts.length <3) {
             throw  new IllegalArgumentException("Can't process " + filename);
         }
-        Date date = format.parse(parts[1] +"_" + parts[2].substring(0, 5));
-        return NEW_DATE_FORMAT.format(date) + filename.substring(19).replaceAll("~", "-");
+        var extension = filename.substring(filename.lastIndexOf("."));
+        String dateText = parts[1] + "_" + parts[2].substring(0, 6);
+        Date date = format.parse(dateText);
+        return NEW_DATE_FORMAT.format(date) + extension;
     }
 }

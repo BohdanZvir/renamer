@@ -28,7 +28,7 @@ public class JpgResolver implements NewNameResolver {
 
     @Override
     public String resolve(File file) {
-        log.info("File: {} processed by {}", file.getName(), getClass().getSimpleName());
+        log.debug("File: {} processed by {}", file.getName(), getClass().getSimpleName());
         return Optional.ofNullable(jpgPictureParser.constructItem(file))
                 .map(this::createItemNewName)
                 .orElse(null);

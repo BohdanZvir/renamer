@@ -2,6 +2,8 @@ package renamer;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class Props {
 
@@ -11,4 +13,9 @@ public class Props {
     private boolean removeProcessed;
     private boolean copyOthers;
     private boolean debug;
+    private List<String> suffixesToProcess;
+
+    public void setSuffixesToProcess(List<Object> suffixesToProcess) {
+        this.suffixesToProcess = suffixesToProcess.stream().map(Object::toString).toList();
+    }
 }

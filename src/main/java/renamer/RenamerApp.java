@@ -33,24 +33,20 @@ public class RenamerApp {
         props = Util.readProps("application.yaml", Props.class, "/renamer");
         sourceDirectory = Util.toAbsolute(Path.of(props.getSourceDirectory()));
         targetDirectory = Optional.ofNullable(props.getTargetDirectory())
-                                  .map(Path::of)
-                                  .map(Util::toAbsolute)
-                                  .orElse(sourceDirectory);
+                .map(Path::of)
+                .map(Util::toAbsolute)
+                .orElse(sourceDirectory);
         validateTarget(targetDirectory);
         log.info("Properties: {}", props);
 
-        resolverList = List.of(new PrefixNameResolver(), new JpgResolver(), new Mp4FileResolver(),
-                               new SpotifyFileResolver(), new NewNameResolver() {
-                    @Override
-                    public boolean canResolve(String filename) {
-                        return props.isCopyOthers();
-                    }
-
-                    @Override
-                    public String resolve(String filename) {
-                        return filename;
-                    }
-                });
+        resolverList = List.of(
+                new SkipResolevedResolver(),
+                new PrefixNameResolver(),
+                new JpgResolver(),
+                new Mp4FileResolver(),
+                new SpotifyFileResolver(),
+                new RemoveSuffixesResolver(props),
+                new SkipResolver(props));
     }
 
     @SneakyThrows
@@ -81,10 +77,7 @@ public class RenamerApp {
     private NewNameResolver getResolver(Path path) {
         String fileName = path.toFile().getName();
 
-        return resolverList.stream()
-                .filter(d -> d.canResolve(fileName))
-                .findFirst()
-                .orElse(null);
+        return resolverList.stream().filter(d -> d.canResolve(fileName)).findFirst().orElse(null);
     }
 
     private void processPath(Path path) {
@@ -104,10 +97,10 @@ public class RenamerApp {
         if (Files.exists(sourcePath)) {
             Path targetPath = validateTargetFile(newName);
             if (isNull(targetPath)) {
-                log.error("Target path is null for source: {}", sourcePath);
+                log.error("{} Target path is null for source: {}", resolver.getClass().getSimpleName(), sourcePath);
                 return;
             }
-            log.info("Renaming\t{}\t\t\t-> {}", sourcePath, targetPath);
+            log.info("Renaming {} \t{}\t\t\t-> {}", resolver.getClass().getSimpleName(), sourcePath, targetPath);
             if (props.isDebug()) {
                 return;
             }

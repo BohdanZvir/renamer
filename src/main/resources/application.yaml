@@ -1,7 +1,14 @@
 renamer:
-  source-directory: /Users/bzvir/Dropbox/rename
-  target-directory: /Users/bzvir/photo-exp
+  source-directory: /Users/up/photo
+  target-directory: /Users/up/photo-exp
   clean-target-directory: true
   remove-processed: false
   copy-others: true
+  suffixes-to-process:
+    - _BURST2
+    - _HDR
+    - _HHT
+    - _BURST3
+    - _1
+    -  -
   debug: true
