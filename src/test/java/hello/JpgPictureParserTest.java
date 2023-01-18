@@ -3,6 +3,8 @@ package hello;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import renamer.ItemDto;
+import renamer.parser.JpgPictureParser;
 
 import java.io.File;
 

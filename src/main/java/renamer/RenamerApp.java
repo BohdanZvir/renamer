@@ -2,6 +2,7 @@ package renamer;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import renamer.resolver.*;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,7 +1,8 @@
-package hello;
+package renamer.parser;
 
 import com.coremedia.iso.IsoFile;
 import lombok.extern.slf4j.Slf4j;
+import renamer.ItemDto;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAmount;
 import java.util.Date;
 
-import static renamer.NewNameResolver.NEW_NAME_PATTERN;
+import static renamer.resolver.NewNameResolver.NEW_NAME_PATTERN;
 
 @Slf4j(topic = "global")
 public class Mp4Parser implements Parser {
@@ -36,12 +37,6 @@ public class Mp4Parser implements Parser {
             return null;
         }
 
-    }
-
-    public static void main(String[] args) throws IOException {
-//            double lengthInSeconds = (double)
-//                    isoFile.getMovieBox().getMovieHeaderBox().getDuration() /
-//                    isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
     }
 
     public String shiftDate(String origin) {

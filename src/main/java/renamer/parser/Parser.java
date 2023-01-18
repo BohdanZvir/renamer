@@ -1,4 +1,6 @@
-package hello;
+package renamer.parser;
+
+import renamer.ItemDto;
 
 import java.io.File;
 

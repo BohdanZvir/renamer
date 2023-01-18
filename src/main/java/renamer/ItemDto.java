@@ -1,4 +1,4 @@
-package hello;
+package renamer;
 
 import lombok.Builder;
 import lombok.Getter;

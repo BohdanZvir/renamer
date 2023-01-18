@@ -2,6 +2,7 @@ package renamer;
 
 import org.junit.Before;
 import org.junit.Test;
+import renamer.resolver.PrefixNameResolver;
 
 import java.util.Map;
 import java.util.stream.Stream;

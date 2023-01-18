@@ -1,9 +1,9 @@
-package renamer;
+package renamer.resolver;
 
-import hello.ItemDto;
-import hello.SpotifyDownloaderParser;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import renamer.ItemDto;
+import renamer.parser.SpotifyDownloaderParser;
 
 import java.io.File;
 

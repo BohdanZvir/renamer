@@ -1,4 +1,4 @@
-package hello;
+package renamer.parser;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
@@ -6,6 +6,7 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.file.FileMetadataDirectory;
 import lombok.extern.slf4j.Slf4j;
+import renamer.ItemDto;
 
 import java.io.File;
 import java.io.IOException;

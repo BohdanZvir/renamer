@@ -1,8 +1,7 @@
-package renamer;
+package renamer.resolver;
 
-import hello.JpgPictureParser;
-import hello.ItemDto;
 import lombok.extern.slf4j.Slf4j;
+import renamer.parser.JpgPictureParser;
 
 import java.io.File;
 import java.util.List;

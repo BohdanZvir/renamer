@@ -1,8 +1,9 @@
-package renamer;
+package renamer.resolver;
 
-import hello.ItemDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import renamer.ItemDto;
+import renamer.Util;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -10,8 +11,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static hello.JpgPictureParser.NAMED_DATE_PATTERN;
-import static hello.JpgPictureParser.ORIGIN_DATE_PATTERN;
+import static renamer.parser.JpgPictureParser.NAMED_DATE_PATTERN;
+import static renamer.parser.JpgPictureParser.ORIGIN_DATE_PATTERN;
 
 public interface NewNameResolver {
 

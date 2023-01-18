@@ -1,9 +1,9 @@
-package renamer;
+package renamer.resolver;
 
-import hello.Mp4Parser;
-import hello.ItemDto;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import renamer.ItemDto;
+import renamer.parser.Mp4Parser;
 
 import java.io.File;
 
