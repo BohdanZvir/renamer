@@ -9,7 +9,7 @@ import java.util.Date;
 public class PrefixNameResolver implements NewNameResolver {
 
     public static final DateFormat NEW_DATE_FORMAT = new SimpleDateFormat(NewNameResolver.NEW_NAME_PATTERN);
-    private static final String IMG_DATE_REGEX = "^\\w{3}_\\d{8}_\\d{6}.+";
+    private static final String IMG_DATE_REGEX = "^\\w{3,}_\\d{8}_\\d{6}.+";
     public static final String IMG_DATE_PATTERN = "yyyyMMdd_HHmmss";
     private final SimpleDateFormat format;
 
@@ -25,7 +25,12 @@ public class PrefixNameResolver implements NewNameResolver {
     @Override
     @SneakyThrows
     public String resolve(String filename) {
-        Date date = format.parse(filename.substring(4, 19));
+
+        String[] parts = filename.split("_");
+        if (parts.length <3) {
+            throw  new IllegalArgumentException("Can't process " + filename);
+        }
+        Date date = format.parse(parts[1] +"_" + parts[2].substring(0, 5));
         return NEW_DATE_FORMAT.format(date) + filename.substring(19).replaceAll("~", "-");
     }
 }

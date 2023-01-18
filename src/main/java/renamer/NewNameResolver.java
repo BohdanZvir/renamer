@@ -26,7 +26,7 @@ public interface NewNameResolver {
 
     default String resolve(File file) {
         String name = file.getName();
-        log.debug("{} process {}", getClass().getSimpleName(), name);
+        log.info("{} process {}", getClass().getSimpleName(), name);
         return resolve(name);
     }
 
@@ -64,7 +64,7 @@ public interface NewNameResolver {
         return parseDate(ORIGIN_DATE_PATTERN, pic.getOriginalDate());
     }
 
-    private Date parseDate(String pattern, String text) {
+    default Date parseDate(String pattern, String text) {
         if (text == null || "".equals(text)) {
             return null;
         }
@@ -74,7 +74,7 @@ public interface NewNameResolver {
         try {
             date = format.parse(text);
         } catch (ParseException e) {
-            e.printStackTrace();
+            log.error("Can't parse {} with pattern {}", text, pattern, e);
         }
         return date;
     }

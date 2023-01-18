@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.InputStream;
 import java.nio.file.Path;
 
+import static java.util.Objects.isNull;
+
 
 @UtilityClass
 @Slf4j
@@ -34,9 +36,12 @@ public class Util {
     }
 
 
-    public static String aliasName(String newName) {
-        String extensionPart = getExtension(newName);
-        String namePart = newName.replaceAll(extensionPart, "");
+    public static String aliasName(String name) {
+        if (isNull(name) || name.isBlank()) {
+            throw new IllegalArgumentException("Name is empty");
+        }
+        String extensionPart = getExtension(name);
+        String namePart = name.replaceAll(extensionPart, "");
         return namePart + "-1" + extensionPart;
     }
 

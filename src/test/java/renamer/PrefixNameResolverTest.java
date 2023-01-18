@@ -3,7 +3,11 @@ package renamer;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Map;
+import java.util.stream.Stream;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class PrefixNameResolverTest {
 
@@ -21,6 +25,13 @@ public class PrefixNameResolverTest {
 
     @Test
     public void resolveWithNotion() {
-        assertEquals("2020-11-28 12.59.08-2.jpg", service.resolve("IMG_20201128_125908~2.jpg"));
+        Map.of("IMG_20201128_125908~2.jpg", "2020-11-28 12.59.08-2.jpg", "VID_20200928_191615.mp4", "2020-09-28 19.16.15.mp4")
+                .forEach((key, value) -> assertEquals(value, service.resolve(key)));
+    }
+
+    @Test
+    public void canResolve() {
+        Stream.of("IMG_20201128_125908~2.jpg", "VIDrrr_20200928_191615.mp4")
+                .forEach(s -> assertTrue(service.canResolve(s)));
     }
 }

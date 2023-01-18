@@ -1,17 +1,19 @@
 package renamer;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static java.util.Collections.reverseOrder;
 import static java.util.Objects.isNull;
-import static java.util.Objects.requireNonNull;
 
 @Slf4j(topic = "global")
 public class RenamerApp {
@@ -36,7 +38,7 @@ public class RenamerApp {
         validateTarget(targetDirectory);
         log.info("Properties: {}", props);
 
-        resolverList = List.of(new JpgResolver(), new Mp4FileResolver(), new PrefixNameResolver(),
+        resolverList = List.of(new PrefixNameResolver(), new JpgResolver(), new Mp4FileResolver(),
                                new SpotifyFileResolver(), new NewNameResolver() {
                     @Override
                     public boolean canResolve(String filename) {
@@ -50,6 +52,7 @@ public class RenamerApp {
                 });
     }
 
+    @SneakyThrows
     private void validateTarget(Path targetDirectory) {
         if (!Files.exists(targetDirectory)) {
             try {
@@ -57,53 +60,60 @@ public class RenamerApp {
             } catch (IOException e) {
                 log.error("Can't create target directory", e);
             }
-        }
-        File[] targetFiles = targetDirectory.toFile().listFiles();
-        if (requireNonNull(targetFiles).length != 0) {
-            if (!props.isCleanTargetDirectory()) {
-                throw new IllegalArgumentException("Target is not empty!!");
-            } else {
-                Stream.of(targetFiles).forEach(File::delete);
+        } else {
+            try (var list = Files.walk(targetDirectory, FileVisitOption.FOLLOW_LINKS)) {
+                long size = list.sorted(reverseOrder()).map(Path::toFile).map(File::delete).count();
+                log.warn("{} files were removed in target before processing", size);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
     }
 
-    public void process() {
-        try (Stream<Path> list = Files.list(sourceDirectory)) {
-            for (Path file : list.toList()) {
-                String newName = processFile(file);
-                updateFile(props.isRemoveProcessed(), file, newName);
-            }
-        } catch (Exception ex) {
-            log.error("process error", ex);
+    @SneakyThrows
+    public void process(Path directory) {
+        try (Stream<Path> list = Files.list(directory)) {
+            list.forEach(this::processPath);
         }
     }
 
-    private String processFile(Path path) {
-        File file = path.toFile();
-        String fileName = file.getName();
+    private NewNameResolver getResolver(Path path) {
+        String fileName = path.toFile().getName();
+
         return resolverList.stream()
                 .filter(d -> d.canResolve(fileName))
                 .findFirst()
-                .map(s -> s.resolve(file)).orElse(null);
+                .orElse(null);
     }
 
-    public void updateFile(boolean remove, Path sourcePath, String newName) {
-        if (isNull(newName) || newName.isEmpty()) {
-            log.warn("new Name is empty for {}", sourcePath);
+    private void processPath(Path path) {
+        if (path.toFile().isDirectory()) {
+            process(path);
+        }
+        NewNameResolver resolver = getResolver(path);
+        if (isNull(resolver)) {
+            log.warn("Can't find resolver for path: {}", path);
             return;
         }
+        updateFile(props.isRemoveProcessed(), path, resolver);
+    }
+
+    public void updateFile(boolean remove, Path sourcePath, NewNameResolver resolver) {
+        String newName = resolver.resolve(sourcePath.toFile());
         if (Files.exists(sourcePath)) {
-            Path targetPath = Path.of(targetDirectory.toString(), newName);
-            if (Files.exists(targetPath)) {
-                log.warn("Already exists {}", targetPath);
-                updateFile(remove, sourcePath, Util.aliasName(newName));
+            Path targetPath = validateTargetFile(newName);
+            if (isNull(targetPath)) {
+                log.error("Target path is null for source: {}", sourcePath);
+                return;
+            }
+            log.info("Renaming\t{}\t\t\t-> {}", sourcePath, targetPath);
+            if (props.isDebug()) {
+                return;
             }
             try {
-                log.info("renaming\t{}\n\t\t\t\t-> {}", sourcePath, targetPath);
                 Files.copy(sourcePath, targetPath);
                 if (remove) {
-                    log.info("removing {}", sourcePath);
+                    log.warn("Removing {}", sourcePath);
                     Files.delete(sourcePath);
                 }
             } catch (IOException e) {
@@ -112,7 +122,20 @@ public class RenamerApp {
         }
     }
 
+    private Path validateTargetFile(String newName) {
+        if (isNull(newName) || newName.isBlank()) {
+            return null;
+        }
+        Path targetPath = Path.of(targetDirectory.toString(), newName);
+        if (Files.exists(targetPath)) {
+            log.warn("{} - already exists.", targetPath);
+            validateTargetFile(Util.aliasName(newName));
+        }
+        return targetPath;
+    }
+
     public static void main(String[] args) {
-        new RenamerApp().process();
+        RenamerApp renamerApp = new RenamerApp();
+        renamerApp.process(renamerApp.sourceDirectory);
     }
 }

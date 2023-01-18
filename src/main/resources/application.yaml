@@ -4,3 +4,4 @@ renamer:
   clean-target-directory: true
   remove-processed: false
   copy-others: true
+  debug: true

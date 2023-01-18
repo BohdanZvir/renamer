@@ -10,4 +10,5 @@ public class Props {
     private boolean cleanTargetDirectory;
     private boolean removeProcessed;
     private boolean copyOthers;
+    private boolean debug;
 }
