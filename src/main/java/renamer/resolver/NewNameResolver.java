@@ -10,6 +10,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import static renamer.parser.JpgPictureParser.NAMED_DATE_PATTERN;
 import static renamer.parser.JpgPictureParser.ORIGIN_DATE_PATTERN;
@@ -33,11 +34,11 @@ public interface NewNameResolver {
         Date named = getNamedDate(pic);
         Date origin = getOriginDate(pic);
         String newName = getNewNameDate(origin, named, pic.getName());
-        if (!newName.isEmpty()) {
+        if (newName.isBlank()) {
             log.warn("IllegalArgumentException: file date is null: {}", pic.getFile());
-            pic.setName(newName);
+            return pic.getName();
         }
-        return pic.getName();
+        return newName;
     }
 
     private String getNewNameDate(Date origin, Date named, String name) {
@@ -67,7 +68,7 @@ public interface NewNameResolver {
         if (text == null || "".equals(text)) {
             return null;
         }
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        SimpleDateFormat format = new SimpleDateFormat(pattern, Locale.ENGLISH);
 
         Date date = null;
         try {
