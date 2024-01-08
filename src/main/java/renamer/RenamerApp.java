@@ -32,21 +32,11 @@ public class RenamerApp {
 
         props = Util.readProps("application.yaml", Props.class, "/renamer");
         sourceDirectory = Util.toAbsolute(Path.of(props.getSourceDirectory()));
-        targetDirectory = Optional.ofNullable(props.getTargetDirectory())
-                .map(Path::of)
-                .map(Util::toAbsolute)
-                .orElse(sourceDirectory);
+        targetDirectory = Optional.ofNullable(props.getTargetDirectory()).map(Path::of).map(Util::toAbsolute).orElse(sourceDirectory);
         validateTarget(targetDirectory);
         log.info("Properties: {}", props);
 
-        resolverList = List.of(
-                new SkipResolevedResolver(),
-                new PrefixNameResolver(),
-                new JpgResolver(),
-                new Mp4FileResolver(),
-                new SpotifyFileResolver(),
-                new RemoveSuffixesResolver(props),
-                new SkipResolver(props));
+        resolverList = List.of(new SkipResolevedResolver(), new PrefixNameResolver(), new JpgResolver(), new Mp4FileResolver(), new SpotifyFileResolver(), new RemoveSuffixesResolver(props), new SkipResolver(props));
     }
 
     @SneakyThrows
@@ -72,6 +62,7 @@ public class RenamerApp {
         try (Stream<Path> list = Files.list(directory)) {
             list.forEach(this::processPath);
         }
+        log.info("Finish");
     }
 
     private NewNameResolver getResolver(Path path) {
@@ -100,7 +91,7 @@ public class RenamerApp {
                 log.error("{} Target path is null for source: {}", resolver.getClass().getSimpleName(), sourcePath);
                 return;
             }
-            log.info("Renaming {} \t{}\t\t\t-> {}", resolver.getClass().getSimpleName(), sourcePath, targetPath);
+            log.info("{} renames\nFrom:\t{}\nTo->:\t{}", resolver.getClass().getSimpleName(), sourcePath, targetPath);
             if (props.isDebug()) {
                 return;
             }
@@ -116,13 +107,13 @@ public class RenamerApp {
         }
     }
 
-    private Path validateTargetFile(String newName) {
-        if (isNull(newName) || newName.isBlank()) {
+    private Path validateTargetFile(String targetName) {
+        if (isNull(targetName) || targetName.isBlank()) {
             return null;
         }
-        Path targetPath = Path.of(targetDirectory.toString(), newName);
+        Path targetPath = Path.of(targetDirectory.toString(), targetName);
         if (Files.exists(targetPath)) {
-           var targetPathNew = validateTargetFile(Util.aliasName(newName));
+            var targetPathNew = validateTargetFile(Util.aliasName(targetName));
             log.warn("{} - already exists. new {}", targetPath, targetPathNew);
             return targetPathNew;
         }

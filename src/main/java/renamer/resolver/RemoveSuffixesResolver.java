@@ -12,12 +12,12 @@ public class RemoveSuffixesResolver implements NewNameResolver {
 
     @Override
     public boolean canResolve(String filename) {
-        return props.getSuffixesToProcess().stream().anyMatch(filename::contains);
+        return props.getSuffixesToRemove().stream().anyMatch(filename::contains);
     }
 
     @Override
     public String resolve(String filename) {
-        for (String s : props.getSuffixesToProcess()) {
+        for (String s : props.getSuffixesToRemove()) {
             filename = filename.replaceAll(s, "");
         }
         return filename;

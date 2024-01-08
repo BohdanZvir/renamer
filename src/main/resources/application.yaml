@@ -4,7 +4,7 @@ renamer:
   clean-target-directory: true
   remove-processed: false
   copy-others: true
-  suffixes-to-process:
+  suffixes-to-remove:
     - _BURST2
     - _HDR
     - _HHT

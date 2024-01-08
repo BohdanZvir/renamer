@@ -6,6 +6,6 @@ public class SkipResolevedResolver implements NewNameResolver {
 
     @Override
     public boolean canResolve(String filename) {
-        return filename.matches(NAME_PATTERN);
+        return !filename.matches(NAME_PATTERN);
     }
 }

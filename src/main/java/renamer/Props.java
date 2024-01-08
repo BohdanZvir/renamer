@@ -13,9 +13,9 @@ public class Props {
     private boolean removeProcessed;
     private boolean copyOthers;
     private boolean debug;
-    private List<String> suffixesToProcess;
+    private List<String> suffixesToRemove;
 
-    public void setSuffixesToProcess(List<Object> suffixesToProcess) {
-        this.suffixesToProcess = suffixesToProcess.stream().map(Object::toString).toList();
+    public void setSuffixesToRemove(List<Object> suffixesToRemove) {
+        this.suffixesToRemove = suffixesToRemove.stream().map(Object::toString).toList();
     }
 }

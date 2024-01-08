@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 
 import static java.util.Objects.isNull;
+import static renamer.resolver.NewNameResolver.NEW_NAME_PATTERN;
 
 
 @UtilityClass
@@ -42,6 +43,11 @@ public class Util {
         }
         String extensionPart = getExtension(name);
         String namePart = name.replaceAll(extensionPart, "");
+        int versionPosition = namePart.indexOf('-', NEW_NAME_PATTERN.length() - 1);
+        if (versionPosition != -1) {
+            var version = Integer.parseInt(namePart.substring(versionPosition +1));
+            return namePart.substring(0, NEW_NAME_PATTERN.length()) + "-" + ++version + extensionPart;
+        }
         return namePart + "-1" + extensionPart;
     }
 
